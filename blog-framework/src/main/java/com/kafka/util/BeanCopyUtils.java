@@ -5,13 +5,13 @@ import org.springframework.beans.BeanUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BeanCopyUtil {
-    private BeanCopyUtil() {
+public class BeanCopyUtils {
+    private BeanCopyUtils() {
     }
 
-    public static <T, V> V copyBean(T source, Class<V> clazz) {
+    public static <T1, T2> T2 copyBean(T1 source, Class<T2> clazz) {
         // 创建目标对象
-        V result = null;
+        T2 result = null;
         try {
             result = clazz.getDeclaredConstructor().newInstance();
             // 实现属性copy
@@ -23,7 +23,7 @@ public class BeanCopyUtil {
         return result;
     }
 
-    public static <T, V> List<V> copyBeanList(List<T> sourceList, Class<V> clazz) {
+    public static <T1, T2> List<T2> copyBeanList(List<T1> sourceList, Class<T2> clazz) {
         return sourceList.stream()
                 .map(e -> copyBean(e, clazz))
                 .collect(Collectors.toList());

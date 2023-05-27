@@ -10,7 +10,7 @@ import com.kafka.domain.vo.CategoryVo;
 import com.kafka.mapper.CategoryMapper;
 import com.kafka.service.ArticleService;
 import com.kafka.service.CategoryService;
-import com.kafka.util.BeanCopyUtil;
+import com.kafka.util.BeanCopyUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     private ArticleService articleService;
 
     @Override
-    public ResponseResult<List<CategoryVo>> getCategoryList() {
+    public ResponseResult<?> getCategoryList() {
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Article::getStatus, SystemConstant.ARTICLE_STATUS_NORMAL);
         List<Article> articleList = articleService.list(queryWrapper);
@@ -44,7 +44,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
                 .filter(category -> SystemConstant.CATEGORY_STATUS_NORMAL.equals(category.getStatus()))
                 .collect(Collectors.toList());
 
-        List<CategoryVo> categoryVos = BeanCopyUtil.copyBeanList(categoryList, CategoryVo.class);
+        List<CategoryVo> categoryVos = BeanCopyUtils.copyBeanList(categoryList, CategoryVo.class);
         return ResponseResult.okResult(categoryVos);
     }
 }

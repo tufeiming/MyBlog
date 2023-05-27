@@ -1,12 +1,13 @@
 package com.kafka.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.kafka.domain.response.ResponseResult;
 import com.kafka.domain.entity.Article;
-import com.kafka.domain.vo.HotArticleVo;
-
-import java.util.List;
+import com.kafka.domain.response.ResponseResult;
 
 public interface ArticleService extends IService<Article> {
-    ResponseResult<List<HotArticleVo>> hotArticleList();
+    ResponseResult<?> hotArticleList();
+
+    ResponseResult<?> articleList(Integer pageNum, Integer pageSize, Long categoryId);
+
+    ResponseResult<?> getArticleDetail(Long id);
 }
