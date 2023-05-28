@@ -21,4 +21,16 @@ public class SystemConstant {
      * 友链审核通过状态
      */
     public static final String LINK_STATUS_NORMAL = "0";
+    /**
+     * 评论无根评论
+     */
+    public static final Long COMMENT_NO_ROOT_COMMENT = -1L;
+    /**
+     * 文章评论
+     */
+    public static final String ARTICLE_COMMENT = "0";
+    /**
+     * 友链评论
+     */
+    public static final String LINK_COMMENT = "1";
 }

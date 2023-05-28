@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 根据用户名查询用户信息
         var queryWrapper = new LambdaQueryWrapper<User>();
-        queryWrapper.eq(User::getUserName, username);
+        queryWrapper.eq(User::getUsername, username);
         User user = userMapper.selectOne(queryWrapper);
         // 判断是否查询到用户，如果没查到抛出异常
         if (user == null) {

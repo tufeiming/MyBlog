@@ -13,6 +13,7 @@ import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +26,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
 
     @Override
     public ResponseResult<?> login(User user) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         // 判断是否认证通过
         if (authentication == null) {
@@ -41,5 +42,14 @@ public class BlogLoginServiceImpl implements BlogLoginService {
         UserInfoVo userInfoVo = BeanCopyUtils.copyBean(loginUser.getUser(), UserInfoVo.class);
         BlogUserLoginVo blogUserLoginVo = new BlogUserLoginVo(jwt, userInfoVo);
         return ResponseResult.okResult(blogUserLoginVo);
+    }
+
+    @Override
+    public ResponseResult<?> logout() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var loginUser = (LoginUser) authentication.getPrincipal();
+        Long userId = loginUser.getUser().getId();
+        redisCache.deleteObject("bloglogin:" + userId);
+        return ResponseResult.okResult();
     }
 }

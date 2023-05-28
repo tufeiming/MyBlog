@@ -18,9 +18,13 @@ public class BlogLoginController {
     @PostMapping("/login")
 
     public ResponseResult<?> login(@RequestBody User user) {
-        if (!StringUtils.hasText(user.getUserName())) {
+        if (!StringUtils.hasText(user.getUsername())) {
             throw new SystemException(AppHttpCode.REQUIRE_USERNAME);
         }
         return blogLoginService.login(user);
+    }
+    @PostMapping("/logout")
+    public ResponseResult<?> logout() {
+        return blogLoginService.logout();
     }
 }

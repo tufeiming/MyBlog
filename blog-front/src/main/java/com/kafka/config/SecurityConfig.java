@@ -48,8 +48,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 登录接口允许匿名访问
                         .requestMatchers("/login").anonymous()
-                        // 测试，需要权限
-                        .requestMatchers("/link/getAllLink").authenticated()
+                        // 登录后才能注销
+                        .requestMatchers("/logout").authenticated()
                         // 其他请求不需要认证即可访问
                         .anyRequest().permitAll()
                 )
