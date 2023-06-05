@@ -49,7 +49,7 @@ public class SecurityConfig {
                         // 登录接口允许匿名访问
                         .requestMatchers("/login").anonymous()
                         // 登录后才能注销
-                        .requestMatchers("/logout").authenticated()
+                        .requestMatchers("/logout", "/user/userInfo").authenticated()
                         // 其他请求不需要认证即可访问
                         .anyRequest().permitAll()
                 )

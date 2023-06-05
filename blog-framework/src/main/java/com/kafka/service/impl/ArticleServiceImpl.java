@@ -15,6 +15,7 @@ import com.kafka.mapper.ArticleMapper;
 import com.kafka.service.ArticleService;
 import com.kafka.service.CategoryService;
 import com.kafka.util.BeanCopyUtils;
+import com.kafka.util.RedisCache;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Lazy
     @Resource
     private CategoryService categoryService;
+
+    @Resource
+    private RedisCache redisCache;
 
     @Override
     public ResponseResult<?> hotArticleList() {
@@ -64,6 +68,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public ResponseResult<?> getArticleDetail(Long id) {
         Article article = getById(id);
+        Integer viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
+        article.setViewCount(viewCount.longValue());
         ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
         Long categoryId = articleDetailVo.getCategoryId();
         Category category = categoryService.getById(categoryId);
@@ -71,5 +77,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             articleDetailVo.setCategoryName(category.getName());
         }
         return ResponseResult.okResult(articleDetailVo);
+    }
+
+    @Override
+    public ResponseResult<?> updateViewCount(Long id) {
+        redisCache.incrementCacheMapValue("article:viewCount", id.toString(), 1L);
+        return ResponseResult.okResult();
     }
 }

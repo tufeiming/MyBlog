@@ -10,6 +10,9 @@ spring:
     multipart:
       max-file-size: 2MB
       max-request-size: 5MB
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 mybatis-plus:
   configuration:
@@ -21,3 +24,8 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
+
+oss:
+  accessKey: LIqACHUgrtyZROGkzQ6pxabJGjzx013CQzQs3J01
+  secretKey: ICYucOC7lMyEgzohcwgrUwSMn7P_k2Pov8LslwbM
+  bucket: kafka-blog
