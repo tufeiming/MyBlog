@@ -30,7 +30,6 @@ public class UploadServiceImpl implements UploadService {
     private String bucket;
     @Override
     public ResponseResult<?> uploadImg(MultipartFile img) {
-        // TODO 判断文件类型或文件大小
         String originalFileName = img.getOriginalFilename();
         if (!Objects.requireNonNull(originalFileName).endsWith(".png") && !originalFileName.endsWith(".jpg")) {
             throw new SystemException(AppHttpCode.FILE_TYPE_ERROR);
