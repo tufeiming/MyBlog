@@ -1,10 +1,12 @@
 package com.kafka.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.kafka.domain.constant.SystemConstant;
 import com.kafka.domain.entity.LoginUser;
 import com.kafka.domain.entity.User;
 import com.kafka.domain.response.AppHttpCode;
 import com.kafka.exception.SystemException;
+import com.kafka.mapper.MenuMapper;
 import com.kafka.mapper.UserMapper;
 import jakarta.annotation.Resource;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,10 +14,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private MenuMapper menuMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -28,6 +34,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new SystemException(AppHttpCode.REQUIRE_USERNAME);
         }
         // 返回用户信息
-        return new LoginUser(user);
+        if (SystemConstant.USER_TYPE_ADMIN.equals(user.getType())) {
+            List<String> perms = menuMapper.selectPermsByUserId(user.getId());
+            return new LoginUser(user, perms);
+        }
+        return new LoginUser(user, null);
     }
 }

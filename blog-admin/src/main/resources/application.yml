@@ -21,3 +21,8 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
+
+oss:
+  access-key: LIqACHUgrtyZROGkzQ6pxabJGjzx013CQzQs3J01
+  secret-key: ICYucOC7lMyEgzohcwgrUwSMn7P_k2Pov8LslwbM
+  bucket: kafka-blog

@@ -28,6 +28,7 @@ public class UploadServiceImpl implements UploadService {
     private String accessKey;
     private String secretKey;
     private String bucket;
+
     @Override
     public ResponseResult<?> uploadImg(MultipartFile img) {
         String originalFileName = img.getOriginalFilename();
@@ -35,9 +36,10 @@ public class UploadServiceImpl implements UploadService {
             throw new SystemException(AppHttpCode.FILE_TYPE_ERROR);
         }
         String filePath = PathUtils.generateFilePath(originalFileName);
-        String url = uploadOSS(img,filePath);
+        String url = uploadOSS(img, filePath);
         return ResponseResult.okResult(url);
     }
+
     private String uploadOSS(MultipartFile imgFile, String filePath) {
         //构造一个带指定 Region 对象的配置类
         Configuration cfg = new Configuration(Region.autoRegion());
@@ -58,7 +60,7 @@ public class UploadServiceImpl implements UploadService {
                 DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
                 System.out.println(putRet.key);
                 System.out.println(putRet.hash);
-                return "http://rvh8g27l2.hn-bkt.clouddn.com/"+ filePath;
+                return "http://rvh8g27l2.hn-bkt.clouddn.com/" + filePath;
             } catch (QiniuException ex) {
                 Response r = ex.response;
                 System.err.println(r.toString());

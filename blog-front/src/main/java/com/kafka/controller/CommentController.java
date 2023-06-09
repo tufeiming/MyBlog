@@ -2,10 +2,8 @@ package com.kafka.controller;
 
 import com.kafka.domain.constant.SystemConstant;
 import com.kafka.domain.dto.AddCommentDto;
-import com.kafka.domain.entity.Comment;
 import com.kafka.domain.response.ResponseResult;
 import com.kafka.service.CommentService;
-import com.kafka.util.BeanCopyUtils;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +33,6 @@ public class CommentController {
 
     @PostMapping
     public ResponseResult<?> addComment(@RequestBody AddCommentDto addCommentDto) {
-        Comment comment = BeanCopyUtils.copyBean(addCommentDto, Comment.class);
-        return commentService.addComment(comment);
+        return commentService.addComment(addCommentDto);
     }
 }

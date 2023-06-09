@@ -54,4 +54,11 @@
           AND del_flag = 0
         ORDER BY parent_id, order_num
     </select>
+    <select id="selectMenuListByRoleId" resultType="java.lang.Long">
+        SELECT m.id
+        FROM menu m
+                 LEFT JOIN role_menu rm on m.id = rm.menu_id
+        WHERE rm.role_id = #{roleId}
+        ORDER BY m.parent_id, m.order_num
+    </select>
 </mapper>

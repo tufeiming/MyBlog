@@ -3,6 +3,8 @@ package com.kafka.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kafka.domain.entity.Link;
 import com.kafka.domain.response.ResponseResult;
+import com.kafka.domain.vo.LinkVo;
+import com.kafka.domain.vo.PageVo;
 
 
 /**
@@ -14,4 +16,6 @@ import com.kafka.domain.response.ResponseResult;
 public interface LinkService extends IService<Link> {
 
     ResponseResult<?> getAllLink();
+
+    PageVo<LinkVo> selectLinkPage(Link link, Integer pageNum, Integer pageSize);
 }

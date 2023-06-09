@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kafka.domain.constant.SystemConstant;
+import com.kafka.domain.dto.AddCommentDto;
 import com.kafka.domain.entity.Comment;
 import com.kafka.domain.response.AppHttpCode;
 import com.kafka.domain.response.ResponseResult;
@@ -47,7 +48,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     }
 
     @Override
-    public ResponseResult<?> addComment(Comment comment) {
+    public ResponseResult<?> addComment(AddCommentDto addCommentDto) {
+        Comment comment = BeanCopyUtils.copyBean(addCommentDto, Comment.class);
         if (!StringUtils.hasText(comment.getContent())) {
             throw new SystemException(AppHttpCode.CONTENT_NOT_NULL);
         }

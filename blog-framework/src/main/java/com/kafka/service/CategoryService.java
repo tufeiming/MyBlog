@@ -3,6 +3,7 @@ package com.kafka.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kafka.domain.entity.Category;
 import com.kafka.domain.response.ResponseResult;
+import com.kafka.domain.vo.PageVo;
 
 
 /**
@@ -13,4 +14,8 @@ import com.kafka.domain.response.ResponseResult;
  */
 public interface CategoryService extends IService<Category> {
     ResponseResult<?> getCategoryList();
+
+    ResponseResult<?> listAllCategory();
+
+    PageVo<Category> selectCategoryPage(Category category, Integer pageNum, Integer pageSize);
 }

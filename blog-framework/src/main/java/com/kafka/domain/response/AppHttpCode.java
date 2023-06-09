@@ -18,7 +18,8 @@ public enum AppHttpCode {
     NICKNAME_NOT_NULL(509, "昵称不能为空"),
     PASSWORD_NOT_NULL(510, "密码不能为空"),
     EMAIL_NOT_NULL(511, "邮箱不能为空"),
-    NICKNAME_EXIST(512, "昵称已存在");
+    NICKNAME_EXIST(512, "昵称已存在"),
+    DELETE_CURRENT_USER(513,"不能删除当前正在使用的用户");
     final int code;
     final String msg;
 

@@ -4,10 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kafka.domain.constant.SystemConstant;
 import com.kafka.domain.entity.Menu;
+import com.kafka.domain.response.AppHttpCode;
+import com.kafka.domain.response.ResponseResult;
+import com.kafka.domain.vo.MenuVo;
 import com.kafka.mapper.MenuMapper;
 import com.kafka.service.MenuService;
+import com.kafka.util.BeanCopyUtils;
 import com.kafka.util.SecurityUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +32,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         if (1L == userId) {
             LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.in(Menu::getMenuType, SystemConstant.MENU_TYPE_MENU, SystemConstant.MENU_TYPE_BUTTON)
-                    .eq(Menu::getStatus, SystemConstant.MENU_STATUS_NORMAL);
+                    .eq(Menu::getStatus, SystemConstant.STATUS_NORMAL);
             List<Menu> menus = list(queryWrapper);
             return menus.stream()
                     .map(Menu::getPerms)
@@ -47,6 +52,54 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             menus = menuMapper.selectRouterMenuTreeByUserId(userId);
         }
         return builderMenuTree(menus);
+    }
+
+    @Override
+    public List<MenuVo> selectMenuList(Menu menu) {
+        LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(StringUtils.hasText(menu.getMenuName()), Menu::getMenuName, menu.getMenuName())
+                .eq(StringUtils.hasText(menu.getStatus()), Menu::getStatus, menu.getStatus())
+                .orderByAsc(Menu::getParentId)
+                .orderByAsc(Menu::getOrderNum);
+        List<Menu> menus = list(queryWrapper);
+        return BeanCopyUtils.copyBeanList(menus, MenuVo.class);
+    }
+
+    @Override
+    public ResponseResult<?> edit(Menu menu) {
+        if (menu.getParentId().equals(menu.getId())) {
+            return ResponseResult.errorResult(AppHttpCode.SYSTEM_ERROR, "修改菜单'" + menu.getMenuName() + "'失败，上级菜单不能选择自己");
+        }
+        updateById(menu);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult<?> deleteById(Long id) {
+        if (hasChildren(id)) {
+            return ResponseResult.errorResult(AppHttpCode.SYSTEM_ERROR, "存在子菜单不允许删除");
+        }
+        removeById(id);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public boolean hasChildren(Long id) {
+        LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Menu::getParentId, id);
+        return count(queryWrapper) > 0;
+    }
+
+    @Override
+    public ResponseResult<?> getInfo(Long id) {
+        Menu menu = getById(id);
+        MenuVo menuVo = BeanCopyUtils.copyBean(menu, MenuVo.class);
+        return ResponseResult.okResult(menuVo);
+    }
+
+    @Override
+    public List<Long> selectMenuListByRoleId(Long roleId) {
+        return getBaseMapper().selectMenuListByRoleId(roleId);
     }
 
     private List<Menu> builderMenuTree(List<Menu> menus) {

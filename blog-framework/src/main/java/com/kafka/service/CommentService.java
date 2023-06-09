@@ -1,6 +1,7 @@
 package com.kafka.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kafka.domain.dto.AddCommentDto;
 import com.kafka.domain.entity.Comment;
 import com.kafka.domain.response.ResponseResult;
 
@@ -15,5 +16,5 @@ public interface CommentService extends IService<Comment> {
 
     ResponseResult<?> commentList(String commentType,Long articleId, Integer pageNum, Integer pageSize);
 
-    ResponseResult<?> addComment(Comment comment);
+    ResponseResult<?> addComment(AddCommentDto addCommentDto);
 }
